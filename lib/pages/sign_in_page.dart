@@ -32,6 +32,7 @@ class SignInPage extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             SignInButton(
+              imageLink: 'images/google-logo.png',
               text: 'Sign in with Google',
               textColor: Colors.black87,
               color: Colors.white,
@@ -39,6 +40,7 @@ class SignInPage extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             SignInButton(
+              imageLink: 'images/facebook-logo.png',
               text: 'Sign in with Facebook',
               textColor: Colors.white,
               color: const Color(0xFF334D92),
@@ -65,7 +67,7 @@ class SignInPage extends StatelessWidget {
                 text: 'Go Anonymous',
                 color: Colors.lime,
                 textColor: Colors.black,
-                onPressed: () {})
+                onPressed: () {}),
           ]),
     );
   }
