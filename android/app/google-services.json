@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "520697325967",
+    "firebase_url": "https://ng-fitness-127f8.firebaseio.com",
+    "project_id": "ng-fitness-127f8",
+    "storage_bucket": "ng-fitness-127f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520697325967:android:ba1d183f6abbc8e49383fa",
+        "android_client_info": {
+          "package_name": "com.example.time_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "520697325967-09niuh53t15ggq45ef2delua63cqjaqc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.time_tracker",
+            "certificate_hash": "10a1adcdf7327ac58e8d8fa7ab02379f4dc47148"
+          }
+        },
+        {
+          "client_id": "520697325967-sktju1j3ugpleabl51fkln0sn39sseeu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-UAN0W05bYN71I-BsyUWckJSSXr57DEU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "520697325967-sktju1j3ugpleabl51fkln0sn39sseeu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/pages/widgets/sign_in_button.dart';
 
-import '../widgets/custom_material_button.dart';
-
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
 
@@ -30,7 +28,7 @@ class SignInPage extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 48.0),
             SignInButton(
               imageLink: 'images/google-logo.png',
               text: 'Sign in with Google',
