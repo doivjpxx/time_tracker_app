@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'dart:async';
 
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,6 +9,7 @@ abstract class Auth {
   Stream<User?> authStateChanges();
   Future<User?> signInAnonymously();
   Future<User?> signInWithGoogle();
+  Future<User?> signInWithFacebook();
   Future<void> signOut();
 }
 
@@ -24,6 +26,34 @@ class AuthService implements Auth {
   Future<User?> signInAnonymously() async {
     final userCredential = await instance.signInAnonymously();
     return userCredential.user;
+  }
+
+  @override
+  Future<User?> signInWithFacebook() async {
+    final fb = FacebookLogin();
+    final response = await fb.logIn(permissions: [
+      FacebookPermission.email,
+      FacebookPermission.publicProfile
+    ]);
+
+    switch (response.status) {
+      case FacebookLoginStatus.success:
+        final accessToken = response.accessToken;
+        if (accessToken != null) {
+          final userCredential = await instance.signInWithCredential(
+              FacebookAuthProvider.credential(accessToken.token));
+
+          return userCredential.user;
+        }
+        return null;
+      case FacebookLoginStatus.cancel:
+        throw FirebaseAuthException(code: 'ERROR_ABORTED_BY_USER');
+      case FacebookLoginStatus.error:
+        throw FirebaseAuthException(code: 'ERROR_FACEBOOK_LOGIN_FAIL');
+
+      default:
+        throw UnimplementedError();
+    }
   }
 
   @override
@@ -49,7 +79,9 @@ class AuthService implements Auth {
   @override
   Future<void> signOut() async {
     final googleSignIn = GoogleSignIn();
+    final facebookSignIn = FacebookLogin();
     await googleSignIn.signOut();
+    await facebookSignIn.logOut();
     await instance.signOut();
   }
 }
