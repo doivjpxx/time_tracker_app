@@ -10,7 +10,9 @@ abstract class Auth {
   Future<User?> signInAnonymously();
   Future<User?> signInWithGoogle();
   Future<User?> signInWithFacebook();
+  Future<User?> signInWithEmailAndPassword(String email, String password);
   Future<void> signOut();
+  Future<User?> createUserWithEmailAndPassword(String email, String password);
 }
 
 class AuthService implements Auth {
@@ -74,6 +76,24 @@ class AuthService implements Auth {
       throw FirebaseAuthException(
           code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
+  }
+
+  @override
+  Future<User?> signInWithEmailAndPassword(
+      String email, String password) async {
+    final userCredential = await instance.signInWithCredential(
+        EmailAuthProvider.credential(email: email, password: password));
+
+    return userCredential.user;
+  }
+
+  @override
+  Future<User?> createUserWithEmailAndPassword(
+      String email, String password) async {
+    final userCredential = await instance.createUserWithEmailAndPassword(
+        email: email, password: password);
+
+    return userCredential.user;
   }
 
   @override
