@@ -19,9 +19,20 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   EmailSignInType _formType = EmailSignInType.signIn;
 
-  void _submit() {
-    print('email: ${_emailController.text}');
-    print('email: ${_passwordController.text}');
+  String get _email => _emailController.text;
+  String get _password => _passwordController.text;
+
+  void _submit() async {
+    try {
+      if (_formType == EmailSignInType.register) {
+        await widget.auth.createUserWithEmailAndPassword(_email, _password);
+      } else {
+        await widget.auth.signInWithEmailAndPassword(_email, _password);
+      }
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   List<Widget> _buildChildren(BuildContext context) {
