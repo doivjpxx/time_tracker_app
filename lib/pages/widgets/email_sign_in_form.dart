@@ -27,6 +27,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _password => _passwordController.text;
 
   bool _isSubmitted = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -38,6 +39,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   void _submit() async {
     setState(() {
+      _isLoading = true;
       _isSubmitted = true;
     });
     try {
@@ -49,6 +51,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       Navigator.of(context).pop();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -58,6 +64,19 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   void _onChange() {
     setState(() {});
+  }
+
+  void _onChangeMode() {
+    setState(() {
+      _isSubmitted = false;
+      if (_formType == EmailSignInType.signIn) {
+        _formType = EmailSignInType.register;
+      } else {
+        _formType = EmailSignInType.signIn;
+      }
+      _emailController.clear();
+      _passwordController.clear();
+    });
   }
 
   List<Widget> _buildChildren(BuildContext context) {
@@ -90,31 +109,22 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         height: 8.0,
       ),
       TextButton(
-          onPressed: () {
-            setState(() {
-              _isSubmitted = false;
-              if (_formType == EmailSignInType.signIn) {
-                _formType = EmailSignInType.register;
-              } else {
-                _formType = EmailSignInType.signIn;
-              }
-              _emailController.clear();
-              _passwordController.clear();
-            });
-          },
+          onPressed: _isLoading ? null : _onChangeMode,
           child: Text(secondaryText))
     ];
   }
 
   TextField _buildPasswordTextField() {
-    bool isNotValid =
-        _isSubmitted && !widget.passwordValidator.isValid(_password);
+    bool isNotValid = _isSubmitted &&
+        !widget.passwordValidator.isValid(_password) &&
+        !_isLoading;
     return TextField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
       decoration: InputDecoration(
           labelText: 'Password',
           hintText: 'yourpassword',
+          enabled: !_isLoading,
           errorText: isNotValid ? widget.invalidPasswordText : null),
       obscureText: true,
       textInputAction: TextInputAction.done,
@@ -131,6 +141,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       decoration: InputDecoration(
           labelText: 'Email',
           hintText: 'test@test.com',
+          enabled: !_isLoading,
           errorText: isNotValid ? widget.invalidEmailText : null),
       autocorrect: false,
       keyboardType: TextInputType.emailAddress,
