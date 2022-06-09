@@ -26,7 +26,20 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _email => _emailController.text;
   String get _password => _passwordController.text;
 
+  bool _isSubmitted = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    setState(() {
+      _isSubmitted = false;
+    });
+  }
+
   void _submit() async {
+    setState(() {
+      _isSubmitted = true;
+    });
     try {
       if (_formType == EmailSignInType.register) {
         await widget.auth.createUserWithEmailAndPassword(_email, _password);
@@ -79,6 +92,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       TextButton(
           onPressed: () {
             setState(() {
+              _isSubmitted = false;
               if (_formType == EmailSignInType.signIn) {
                 _formType = EmailSignInType.register;
               } else {
@@ -93,11 +107,15 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   TextField _buildPasswordTextField() {
+    bool isNotValid =
+        _isSubmitted && !widget.passwordValidator.isValid(_password);
     return TextField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
-      decoration: const InputDecoration(
-          labelText: 'Password', hintText: 'yourpassword'),
+      decoration: InputDecoration(
+          labelText: 'Password',
+          hintText: 'yourpassword',
+          errorText: isNotValid ? widget.invalidPasswordText : null),
       obscureText: true,
       textInputAction: TextInputAction.done,
       onEditingComplete: _submit,
@@ -106,11 +124,14 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   TextField _buildEmailTextField() {
+    bool isNotValid = _isSubmitted && !widget.emailValidator.isValid(_email);
     return TextField(
       controller: _emailController,
       focusNode: _emailFocusNode,
-      decoration:
-          const InputDecoration(labelText: 'Email', hintText: 'test@test.com'),
+      decoration: InputDecoration(
+          labelText: 'Email',
+          hintText: 'test@test.com',
+          errorText: isNotValid ? widget.invalidEmailText : null),
       autocorrect: false,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
