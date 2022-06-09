@@ -17,6 +17,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
   EmailSignInType _formType = EmailSignInType.signIn;
 
   String get _email => _emailController.text;
@@ -35,6 +38,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     }
   }
 
+  void _emailEditingComplete() {
+    FocusScope.of(context).requestFocus(_passwordFocusNode);
+  }
+
   List<Widget> _buildChildren(BuildContext context) {
     final primaryText =
         _formType == EmailSignInType.signIn ? 'Sign in' : 'Create an account';
@@ -43,20 +50,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         : 'Have an account? Sign in';
 
     return [
-      TextField(
-        controller: _emailController,
-        decoration: const InputDecoration(
-            labelText: 'Email', hintText: 'test@test.com'),
-      ),
+      _buildEmailTextField(),
       const SizedBox(
         height: 8.0,
       ),
-      TextField(
-        controller: _passwordController,
-        decoration: const InputDecoration(
-            labelText: 'Password', hintText: 'yourpassword'),
-        obscureText: true,
-      ),
+      _buildPasswordTextField(),
       const SizedBox(
         height: 20,
       ),
@@ -84,6 +82,31 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           },
           child: Text(secondaryText))
     ];
+  }
+
+  TextField _buildPasswordTextField() {
+    return TextField(
+      controller: _passwordController,
+      focusNode: _passwordFocusNode,
+      decoration: const InputDecoration(
+          labelText: 'Password', hintText: 'yourpassword'),
+      obscureText: true,
+      textInputAction: TextInputAction.done,
+      onEditingComplete: _submit,
+    );
+  }
+
+  TextField _buildEmailTextField() {
+    return TextField(
+      controller: _emailController,
+      focusNode: _emailFocusNode,
+      decoration:
+          const InputDecoration(labelText: 'Email', hintText: 'test@test.com'),
+      autocorrect: false,
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      onEditingComplete: _emailEditingComplete,
+    );
   }
 
   @override
