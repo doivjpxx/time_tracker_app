@@ -42,12 +42,18 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     FocusScope.of(context).requestFocus(_passwordFocusNode);
   }
 
+  void _onChange() {
+    setState(() {});
+  }
+
   List<Widget> _buildChildren(BuildContext context) {
     final primaryText =
         _formType == EmailSignInType.signIn ? 'Sign in' : 'Create an account';
     final secondaryText = _formType == EmailSignInType.signIn
         ? 'Need an account? Register'
         : 'Have an account? Sign in';
+
+    bool isValid = _email.isNotEmpty && _password.isNotEmpty;
 
     return [
       _buildEmailTextField(),
@@ -63,7 +69,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         child: FormSubmitButton(
             text: primaryText,
             color: Theme.of(context).primaryColor,
-            onPressed: _submit),
+            onPressed: isValid ? _submit : null),
       ),
       const SizedBox(
         height: 8.0,
@@ -93,6 +99,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       obscureText: true,
       textInputAction: TextInputAction.done,
       onEditingComplete: _submit,
+      onChanged: (_) => _onChange,
     );
   }
 
@@ -106,6 +113,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       onEditingComplete: _emailEditingComplete,
+      onChanged: (_) => _onChange,
     );
   }
 

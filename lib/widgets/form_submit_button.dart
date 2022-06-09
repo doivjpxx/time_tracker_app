@@ -6,7 +6,7 @@ class FormSubmitButton extends CustomMaterialButton {
     super.key,
     required String text,
     required Color color,
-    required Function() onPressed,
+    Function()? onPressed,
   }) : super(
           child: Text(
             text,

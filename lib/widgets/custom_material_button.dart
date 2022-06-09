@@ -5,7 +5,7 @@ class CustomMaterialButton extends StatelessWidget {
   final double height;
   final Color color;
   final double borderRadius;
-  final Function() onPressed;
+  final Function()? onPressed;
 
   const CustomMaterialButton(
       {super.key,
@@ -20,6 +20,7 @@ class CustomMaterialButton extends StatelessWidget {
     return SizedBox(
       height: height,
       child: MaterialButton(
+        disabledColor: Colors.grey.shade400,
         color: color,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
