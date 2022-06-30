@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker/utils/validator.dart';
-import 'package:time_tracker/widgets/custom_dialog.dart';
 import 'package:time_tracker/widgets/form_submit_button.dart';
 import 'package:time_tracker/widgets/show_exception_alert_dialog.dart';
 
@@ -37,6 +36,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     super.dispose();
     setState(() {
       _isSubmitted = false;
+      _isLoading = false;
+      _emailController.dispose();
+      _passwordController.dispose();
+      _emailFocusNode.dispose();
+      _passwordFocusNode.dispose();
     });
   }
 

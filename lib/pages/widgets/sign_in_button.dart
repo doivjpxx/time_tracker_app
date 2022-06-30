@@ -10,7 +10,7 @@ class SignInButton extends CustomMaterialButton {
     required Color color,
     required Color textColor,
     this.imageLink = '',
-    required Function() onPressed,
+    Function()? onPressed,
   })  : assert(text != ''),
         super(
           color: color,
