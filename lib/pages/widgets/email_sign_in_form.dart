@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:time_tracker/services/auth_service.dart';
+import 'package:time_tracker/services/auth_provider.dart';
 import 'package:time_tracker/utils/validator.dart';
 import 'package:time_tracker/widgets/custom_dialog.dart';
 import 'package:time_tracker/widgets/form_submit_button.dart';
@@ -7,9 +7,7 @@ import 'package:time_tracker/widgets/form_submit_button.dart';
 enum EmailSignInType { signIn, register }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  final Auth auth;
-
-  EmailSignInForm({super.key, required this.auth});
+  EmailSignInForm({super.key});
 
   @override
   State<EmailSignInForm> createState() => _EmailSignInFormState();
@@ -39,15 +37,16 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   void _submit() async {
+    final auth = AuthProvider.of(context);
     setState(() {
       _isLoading = true;
       _isSubmitted = true;
     });
     try {
       if (_formType == EmailSignInType.register) {
-        await widget.auth.createUserWithEmailAndPassword(_email, _password);
+        await auth.createUserWithEmailAndPassword(_email, _password);
       } else {
-        await widget.auth.signInWithEmailAndPassword(_email, _password);
+        await auth.signInWithEmailAndPassword(_email, _password);
       }
       Navigator.of(context).pop();
     } catch (e) {
@@ -102,7 +101,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       const SizedBox(
         height: 8.0,
       ),
-      _buildPasswordTextField(),
+      _buildPasswordTextField(context),
       const SizedBox(
         height: 20,
       ),
@@ -122,7 +121,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     ];
   }
 
-  TextField _buildPasswordTextField() {
+  TextField _buildPasswordTextField(BuildContext context) {
     bool isNotValid = _isSubmitted &&
         !widget.passwordValidator.isValid(_password) &&
         !_isLoading;

@@ -38,6 +38,13 @@
             {
               "client_id": "520697325967-sktju1j3ugpleabl51fkln0sn39sseeu.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "520697325967-foglmhqjuh37ui9ap0fld04kan1k1val.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.timeTracker"
+              }
             }
           ]
         }

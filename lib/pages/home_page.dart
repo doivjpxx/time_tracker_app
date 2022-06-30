@@ -1,15 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:time_tracker/services/auth_service.dart';
+import 'package:time_tracker/services/auth_provider.dart';
 import 'package:time_tracker/widgets/custom_dialog.dart';
 
 class HomePage extends StatelessWidget {
-  final Auth auth;
+  const HomePage({super.key});
 
-  const HomePage({super.key, required this.auth});
-
-  Future<void> _signOut() async {
+  Future<void> _signOut(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.signOut();
     } catch (e) {
       return;
@@ -25,7 +23,7 @@ class HomePage extends StatelessWidget {
           cancelActionText: 'Cancel');
 
       if (confirmSignOut) {
-        _signOut();
+        await _signOut(context);
       }
     } catch (e) {
       return;

@@ -31,8 +31,11 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.4
   firebase_core: ^1.17.1
+  firebase_core_desktop: ^1.0.0 # for desktop
   firebase_auth: ^3.3.19
+  firebase_auth_desktop: ^1.0.0 # for desktop
   google_sign_in: ^5.3.2
+  google_sign_in_dartio: ^0.2.1
   flutter_login_facebook: ^1.4.1
 
 

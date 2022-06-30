@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'dart:async';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in_dartio/google_sign_in_dartio.dart';
+import 'package:time_tracker/firebase_options.dart';
 
 abstract class Auth {
   User? get currentUser;
@@ -76,6 +80,7 @@ class AuthService implements Auth {
       throw FirebaseAuthException(
           code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
     }
+    return null;
   }
 
   @override
@@ -98,10 +103,12 @@ class AuthService implements Auth {
 
   @override
   Future<void> signOut() async {
+    GoogleSignInDart.register(
+        clientId: DefaultFirebaseOptions.currentPlatform.appId);
     final googleSignIn = GoogleSignIn();
     final facebookSignIn = FacebookLogin();
     await googleSignIn.signOut();
-    await facebookSignIn.logOut();
+    if (!Platform.isWindows) await facebookSignIn.logOut();
     await instance.signOut();
   }
 }
