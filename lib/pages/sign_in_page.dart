@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/pages/blocs/sign_in_bloc.dart';
 import 'package:time_tracker/pages/email_sign_in_page.dart';
 import 'package:time_tracker/pages/widgets/sign_in_button.dart';
 import 'package:time_tracker/widgets/show_exception_alert_dialog.dart';
@@ -10,6 +11,13 @@ import 'package:time_tracker/widgets/show_exception_alert_dialog.dart';
 import '../services/auth_service.dart';
 
 class SignInPage extends StatefulWidget {
+  static Widget create(BuildContext context) {
+    return Provider<SignInBloc>(
+      create: (_) => SignInBloc(),
+      child: const SignInPage(),
+    );
+  }
+
   const SignInPage({super.key});
 
   @override
