@@ -37,11 +37,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     setState(() {
       _isSubmitted = false;
       _isLoading = false;
-      _emailController.dispose();
-      _passwordController.dispose();
-      _emailFocusNode.dispose();
-      _passwordFocusNode.dispose();
     });
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
   }
 
   void _submit() async {
