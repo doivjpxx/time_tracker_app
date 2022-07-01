@@ -22,10 +22,9 @@ class SignInBloc {
       _setIsLoading(true);
       return await signInMethod();
     } catch (e) {
-      rethrow;
-    } finally {
       _setIsLoading(false);
-    }
+      rethrow;
+    } // no need to finally here, bloc auto dispose when move to next page
   }
 
   Future<User?> signInAnonymously() async =>
