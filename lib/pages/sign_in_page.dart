@@ -11,18 +11,17 @@ import 'package:time_tracker/widgets/show_exception_alert_dialog.dart';
 import '../services/auth_service.dart';
 
 class SignInPage extends StatelessWidget {
+  final SignInBloc bloc;
+  const SignInPage({super.key, required this.bloc});
+
   static Widget create(BuildContext context) {
+    final auth = Provider.of<Auth>(context);
     return Provider<SignInBloc>(
-      create: (_) => SignInBloc(),
-      child: const SignInPage(),
+      create: (_) => SignInBloc(auth: auth),
+      dispose: (_, bloc) => bloc.dispose(),
+      child: Consumer<SignInBloc>(
+          builder: (_, bloc, __) => SignInPage(bloc: bloc)),
     );
-  }
-
-  const SignInPage({super.key});
-
-  void _setLoading(BuildContext context, bool event) {
-    final bloc = Provider.of<SignInBloc>(context, listen: false);
-    bloc.setIsLoading(event);
   }
 
   void _showSignInFailed(BuildContext context, Exception exception) {
@@ -37,37 +36,25 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      _setLoading(context, true);
-      final auth = Provider.of<Auth>(context, listen: false);
-      await auth.signInAnonymously();
+      await bloc.signInAnonymously();
     } on Exception catch (e) {
       _showSignInFailed(context, e);
-    } finally {
-      _setLoading(context, false);
     }
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      _setLoading(context, true);
-      final auth = Provider.of<Auth>(context, listen: false);
-      await auth.signInWithGoogle();
+      await bloc.signInWithGoogle();
     } on Exception catch (e) {
       _showSignInFailed(context, e);
-    } finally {
-      _setLoading(context, false);
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      _setLoading(context, true);
-      final auth = Provider.of<Auth>(context, listen: false);
-      await auth.signInWithFacebook();
+      await bloc.signInWithFacebook();
     } on Exception catch (e) {
       _showSignInFailed(context, e);
-    } finally {
-      _setLoading(context, false);
     }
   }
 
