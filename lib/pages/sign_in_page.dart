@@ -3,26 +3,25 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/pages/blocs/sign_in_bloc.dart';
 import 'package:time_tracker/pages/email_sign_in_page.dart';
 import 'package:time_tracker/pages/widgets/sign_in_button.dart';
 import 'package:time_tracker/widgets/show_exception_alert_dialog.dart';
 
 import '../services/auth_service.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
+class SignInPage extends StatelessWidget {
+  final SignInBloc bloc;
+  const SignInPage({super.key, required this.bloc});
 
-  @override
-  State<SignInPage> createState() => _SignInPageState();
-}
-
-class _SignInPageState extends State<SignInPage> {
-  bool _isLoading = false;
-
-  void _setLoading(bool event) {
-    setState(() {
-      _isLoading = event;
-    });
+  static Widget create(BuildContext context) {
+    final auth = Provider.of<Auth>(context);
+    return Provider<SignInBloc>(
+      create: (_) => SignInBloc(auth: auth),
+      dispose: (_, bloc) => bloc.dispose(),
+      child: Consumer<SignInBloc>(
+          builder: (_, bloc, __) => SignInPage(bloc: bloc)),
+    );
   }
 
   void _showSignInFailed(BuildContext context, Exception exception) {
@@ -37,37 +36,25 @@ class _SignInPageState extends State<SignInPage> {
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      _setLoading(true);
-      final auth = Provider.of<Auth>(context, listen: false);
-      await auth.signInAnonymously();
+      await bloc.signInAnonymously();
     } on Exception catch (e) {
       _showSignInFailed(context, e);
-    } finally {
-      _setLoading(false);
     }
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      _setLoading(true);
-      final auth = Provider.of<Auth>(context, listen: false);
-      await auth.signInWithGoogle();
+      await bloc.signInWithGoogle();
     } on Exception catch (e) {
       _showSignInFailed(context, e);
-    } finally {
-      _setLoading(false);
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      _setLoading(true);
-      final auth = Provider.of<Auth>(context, listen: false);
-      await auth.signInWithFacebook();
+      await bloc.signInWithFacebook();
     } on Exception catch (e) {
       _showSignInFailed(context, e);
-    } finally {
-      _setLoading(false);
     }
   }
 
@@ -78,31 +65,37 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = Provider.of<SignInBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Time Tracker'),
         elevation: 2.0,
       ),
       backgroundColor: Colors.grey.shade200,
-      body: _buildContent(context),
+      body: StreamBuilder<bool>(
+        stream: bloc.isLoadingStream,
+        initialData: false,
+        builder: ((context, snapshot) =>
+            _buildContent(context, snapshot.data ?? false)),
+      ),
     );
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildContent(BuildContext context, bool isLoading) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 50.0, child: _buildHeader()),
+            SizedBox(height: 50.0, child: _buildHeader(isLoading)),
             const SizedBox(height: 48.0),
             SignInButton(
               imageLink: 'images/google-logo.png',
               text: 'Sign in with Google',
               textColor: Colors.black87,
               color: Colors.white,
-              onPressed: _isLoading ? null : () => _signInWithGoogle(context),
+              onPressed: isLoading ? null : () => _signInWithGoogle(context),
             ),
             const SizedBox(height: 8.0),
             if (!Platform.isWindows) ...[
@@ -112,7 +105,7 @@ class _SignInPageState extends State<SignInPage> {
                 textColor: Colors.white,
                 color: const Color(0xFF334D92),
                 onPressed:
-                    _isLoading ? null : () => _signInWithFacebook(context),
+                    isLoading ? null : () => _signInWithFacebook(context),
               ),
               const SizedBox(height: 8.0),
             ],
@@ -120,7 +113,7 @@ class _SignInPageState extends State<SignInPage> {
                 text: 'Sign in with Email',
                 color: Colors.teal.shade700,
                 textColor: Colors.white,
-                onPressed: _isLoading ? null : () => _signInWithEmail(context)),
+                onPressed: isLoading ? null : () => _signInWithEmail(context)),
             const SizedBox(
               height: 8.0,
             ),
@@ -141,8 +134,8 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Widget _buildHeader() {
-    if (_isLoading) {
+  Widget _buildHeader(bool isLoading) {
+    if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
